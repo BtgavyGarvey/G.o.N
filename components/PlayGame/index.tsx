@@ -292,6 +292,25 @@ export default function PlayGamePage() {
   return (
     <main className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6">
 
+      {/* <Script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></Script>
+      <ins className="eas6a97888e2" data-zoneid="5663318" data-keywords="keywords" data-sub="123450000" data-block-ad-types="0"></ins>
+      <Script
+        id="adprovider-init"
+        dangerouslySetInnerHTML={{
+          __html: '(AdProvider = window.AdProvider || []).push({"serve": {}});',
+        }}
+      /> */}
+
+      {/* <Script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></Script>
+      <ins className="eas6a97888e31" data-zoneid="5663330"></ins>
+      <Script>{`(AdProvider = window.AdProvider || []).push({"serve": {}});`}</Script> */}
+
+      <Script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></Script>
+      <ins className="eas6a97888e2" data-zoneid="5663322" data-keywords="keywords" data-sub="123450000" data-block-ad-types="0"></ins>
+      <Script id="ad-provider-init" strategy="afterInteractive">
+        {`(AdProvider = window.AdProvider || []).push({"serve": {}});`}
+      </Script>
+
       {result === 'win' && <Confetti width={window.innerWidth} height={window.innerHeight} />}
 
       <motion.div

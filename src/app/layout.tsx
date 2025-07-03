@@ -1,4 +1,8 @@
 'use client'
+
+// app/globals.css or _app.tsx
+import 'video.js/dist/video-js.css';
+
 // import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -60,6 +64,8 @@ export default function RootLayout({
       <head>
         <title>Legion Maria Stream | Your Spiritual Media Gallery</title>
 
+        <meta http-equiv="Delegate-CH" content="Sec-CH-UA https://s.magsrv.com; Sec-CH-UA-Mobile https://s.magsrv.com; Sec-CH-UA-Arch https://s.magsrv.com; Sec-CH-UA-Model https://s.magsrv.com; Sec-CH-UA-Platform https://s.magsrv.com; Sec-CH-UA-Platform-Version https://s.magsrv.com; Sec-CH-UA-Bitness https://s.magsrv.com; Sec-CH-UA-Full-Version-List https://s.magsrv.com; Sec-CH-UA-Full-Version https://s.magsrv.com;"></meta>
+
         <meta name="6a97888e-site-verification" content="c846d18e475445846be7ef3db6045e68"></meta>
 
         <meta
@@ -105,7 +111,13 @@ export default function RootLayout({
 
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <div id="ad-banner"></div>
-        
+
+        {/* <Script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></Script>
+        <ins className="eas6a97888e2" data-zoneid="5663320"></ins>
+        <Script id="ad-provider-init" strategy="afterInteractive">
+          {`(AdProvider = window.AdProvider || []).push({"serve": {}});`}
+        </Script> */}
+
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <SessionProvider
             session={undefined}
