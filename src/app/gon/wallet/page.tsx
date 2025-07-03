@@ -1,17 +1,16 @@
 // import { getServerSession } from "next-auth";
 // import authOptions from "./api/auth/[...nextauth]/options";
-import ClientHome from "../../components/index";
-
+import { ClientWallet } from "../../../../components/index";
 
 export const metadata = {
-  title: "Game of Numbers - Home",
+  title: "Game of Numbers - Play Now",
   description: "Welcome to the Game of Numbers"
 };
 
-export default async function Home() {
+export default async function Wallet() {
   // const session = await getServerSession(authOptions);
 
   return (
-      <ClientHome session={null} />
+      <ClientWallet session={null} />
   );
 }
