@@ -2,6 +2,8 @@
 
 // app/globals.css or _app.tsx
 import 'video.js/dist/video-js.css';
+// import 'vlitejs/dist/vlite.css';
+// import 'vlitejs/dist/plugins/ads.css';
 
 // import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -15,6 +17,8 @@ import { useEffect, ReactNode } from "react";
 import Script from "next/script";
 import * as gtag from "@/app/lib/gtag";
 import { Toaster } from "react-hot-toast";
+import { AdblockDetector } from 'adblock-detector';
+import { ClientAds } from '../../components';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,15 +43,17 @@ export default function RootLayout({
 
   const pathname = usePathname();
 
+  const adbDetector = new AdblockDetector() // call 
+
+  const userHasAdblock = adbDetector.detect() // detect adblock it return ture or false
+
   const isAdBlockDetected = useDetectAdBlock();
 
-  useEffect(() => {
-    if (isAdBlockDetected) {
-      // Example actions when adblock detected
-      // signOut();  // Sign out user if they are logged in
-      // router.push('/lmacm/ad-blocker-warning');
-    }
-  }, [isAdBlockDetected]);
+  // useEffect(() => {
+  //   if (isAdBlockDetected) {
+  //     window.location.href = '/gon/ad-blocker-warning';
+  //   }
+  // }, [isAdBlockDetected]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -56,9 +62,9 @@ export default function RootLayout({
   }, [pathname]);
 
   // Optional: prevent render if adblock detected
-  // if (isAdBlockDetected) {
-  //   return null;
-  // }
+  if (isAdBlockDetected) {
+    window.location.href = '/gon/ad-blocker-warning';
+  }
   return (
     <html lang="en">
       <head>
@@ -89,6 +95,14 @@ export default function RootLayout({
         {/* Viewport & Favicon */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+        
+        <Script src="http://vjs.zencdn.net/8.21.1/video.js"></Script>
+        <Script src="lib/videojs-contrib-ads/videojs.ads.js"></Script>
+        <link href="//vjs.zencdn.net/8.21.1/video-js.min.css" rel="stylesheet" />
+        <Script src="//vjs.zencdn.net/8.21.1/video.min.js"></Script>
+
+        <Script src="lib/vast-client.js"></Script>
+        <Script src="videojs.vast.js"></Script>
 
         {/* Google Analytics */}
         <Script
@@ -106,10 +120,15 @@ export default function RootLayout({
           `}
         </Script>
         {/* <Script type='text/javascript' src='//pl26127580.profitableratecpm.com/4a/d1/2a/4ad12a6ab63f6e571b51483e9aafefb1.js'></Script> */}
+        {/* <Script type='text/javascript' src='//pl27079407.profitableratecpm.com/08/ed/56/08ed5664e2eef87de00bdea8d068c7bc.js'></Script> */}
+
+        {/* <Script type='text/javascript' strategy='afterInteractive' src='//donkeygentlesubdued.com/08/ed/56/08ed5664e2eef87de00bdea8d068c7bc.js'></Script> */}
+        <Script type='text/javascript' src='//pl27084933.profitableratecpm.com/94/36/4c/94364c77159e8c512a5722cf2a0d1bca.js'></Script>
       </head>
 
 
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+
         <div id="ad-banner"></div>
 
         {/* <Script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></Script>
@@ -143,7 +162,8 @@ export default function RootLayout({
 
           <Analytics />
         </ThemeProvider>
-        {/* <Script type='text/javascript' src='//pl26127543.profitableratecpm.com/b9/eb/f3/b9ebf3ad347ae3d6475d2647154ddd39.js'></Script> */}
+        <Script type='text/javascript' src='//pl27084862.profitableratecpm.com/8d/13/81/8d1381316c87bd8a5984ed49c02be483.js'></Script>
+
       </body>
     </html>
   );

@@ -1,74 +1,88 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
-import 'videojs-contrib-ads';
-import 'videojs-ima';
+import React, { useRef, useState } from 'react';
+import { VideoJS } from './VideoJS';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { toast } from 'react-hot-toast';
+import videojs from 'video.js';
+import Player from "video.js/dist/types/player";
 
-const VAST_URL = 'https://s.magsrv.com/v1/vast.php?idzone=5664422';
+interface RewardAdModalProps {
+  onComplete: () => void;
+}
 
-export default function RewardAdModal({ onComplete }: { onComplete: () => void }) {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+export default function RewardAdModal({ onComplete }: RewardAdModalProps) {
   const [adComplete, setAdComplete] = useState(false);
+  const playerRef = useRef<Player | null>(null);
 
-  useEffect(() => {
-    if (!videoRef.current) return;
+  const videoJsOptions = {
+    autoplay: true,
+    controls: true,
+    preload: 'auto',
+    fluid: true,
+    // No direct video source — VAST will provide it
+    sources: [],
+  };
 
-    const player = videojs(videoRef.current, {
-      controls: true,
-      autoplay: true,
-      preload: 'auto',
+  const handlePlayerReady = (player: Player) => {
+    playerRef.current = player;
+
+    (player as any).ads();
+
+    (player as any).vastClient({
+      adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=d27dc1aa8e1b07b0a48a6fdf8aaa06ad',
+      playAdAlways: true,
+      adCancelTimeout: 5000,
+      adsEnabled: true,
+      verbosity: 4,
     });
 
-    // @ts-expect-error: ima not typed
-    player.ima({
-      adTagUrl: VAST_URL,
-      debug: true,
-      timeout: 5000,
+    (player as any).on('vast.adStarted', () => {
+      console.log('✅ VAST ad started');
+      setAdComplete(false);
     });
 
-    // @ts-expect-error
-    player.ima.requestAds();
-
-    player.on('adended', () => {
+    (player as any).on('adend', () => {
+      console.log('✅ VAST ad ended');
       setAdComplete(true);
+      toast.success('✅ Ad watched. You may now claim your reward.');
     });
 
-    return () => {
-      player.dispose();
-    };
-  }, []);
+    (player as any).on('error', (e: any) => {
+      console.error('Ad error:', e);
+      toast.error('❌ An error occurred while playing the ad.');
+    });
+  };
+
+
+  const handleClaimReward = () => {
+    toast.success('🎁 You claimed $0.30!');
+    onComplete();
+  };
 
   return (
     <Dialog open>
       <DialogContent className="space-y-4 text-center max-w-2xl">
-        {/* ✅ Accessible title for screen readers */}
         <VisuallyHidden>
           <DialogTitle>Rewarded Ad</DialogTitle>
         </VisuallyHidden>
 
-        <h2 className="text-lg font-semibold">Watch the full ad to claim $0.30</h2>
+        <h2 className="text-lg font-semibold">🎥 Watch the full ad to claim $0.30</h2>
 
-        <div className="w-full aspect-video bg-black rounded overflow-hidden">
-          <video
-            ref={videoRef}
-            className="video-js vjs-big-play-centered w-full h-full"
-            playsInline
-          />
-        </div>
+        <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
 
         <Button
           disabled={!adComplete}
-          onClick={onComplete}
+          onClick={handleClaimReward}
           className="w-full"
         >
-          {adComplete ? '🎁 Claim Your $0.30' : '⏳ Ad still playing...'}
+          {adComplete ? '🎁 Claim Your $0.30 Reward' : '⏳ Watch ad to unlock reward'}
         </Button>
       </DialogContent>
     </Dialog>
   );
 }
+// This component handles the rewarded ad modal, allowing users to watch an ad and claim a reward.
+// It uses VideoJS for video playback and integrates with a VAST ad server.

@@ -215,7 +215,7 @@ export default function PlayGamePage() {
   const [cooldownRemaining, setCooldownRemaining] = useState<number>(0);
   const [result, setResult] = useState<'win' | 'lose' | null>(null);
   const [loading, setLoading] = useState(false);
-  const [rewardPending, setRewardPending] = useState(true); // ✅ New state
+  const [rewardPending, setRewardPending] = useState(false); // ✅ New state
 
   const [wallet, setWallet] = useState<number>(3.4); // mock wallet
   const [totalPlays, setTotalPlays] = useState(0);
@@ -291,6 +291,8 @@ export default function PlayGamePage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6">
+
+      
 
       {/* <Script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></Script>
       <ins className="eas6a97888e2" data-zoneid="5663318" data-keywords="keywords" data-sub="123450000" data-block-ad-types="0"></ins>
