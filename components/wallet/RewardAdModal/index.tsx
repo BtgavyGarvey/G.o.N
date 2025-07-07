@@ -20,8 +20,7 @@ export default function VideoAdPlayer() {
           clearInterval(interval); // Stop polling
 
           player.ima({
-            // adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=d27dc1aa8e1b07b0a48a6fdf8aaa06ad',
-            adTagUrl: 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&env=vp&output=vast&unviewed_position_start=1',
+            adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=d27dc1aa8e1b07b0a48a6fdf8aaa06ad',
             debug: true,
             adsRenderingSettings: {
               enablePreloading: true,
