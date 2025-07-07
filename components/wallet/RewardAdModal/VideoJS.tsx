@@ -12,6 +12,8 @@ interface VideoJSProps {
   onReady?: (player: Player) => void;
 }
 
+// https://www.videosprofitnetwork.com/watch.xml?key=d27dc1aa8e1b07b0a48a6fdf8aaa06ad
+
 export const VideoJS: React.FC<VideoJSProps> = ({ options, onReady }) => {
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<Player | null>(null);
@@ -33,6 +35,8 @@ export const VideoJS: React.FC<VideoJSProps> = ({ options, onReady }) => {
       player.src(options.sources);
       player.autoplay(options.autoplay);
     }
+
+    console.log('Available plugins:', Object.keys((videojs.getPlugins?.() || {})));
 
     return () => {
       if (playerRef.current && !playerRef.current.isDisposed()) {

@@ -1,88 +1,88 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { VideoJS } from './VideoJS';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { toast } from 'react-hot-toast';
-import videojs from 'video.js';
-import Player from "video.js/dist/types/player";
+import { useEffect, useRef } from 'react';
+import Script from 'next/script';
 
-interface RewardAdModalProps {
-  onComplete: () => void;
-}
+export default function VideoAdPlayer() {
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-export default function RewardAdModal({ onComplete }: RewardAdModalProps) {
-  const [adComplete, setAdComplete] = useState(false);
-  const playerRef = useRef<Player | null>(null);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const videojs = (window as any).videojs;
 
-  const videoJsOptions = {
-    autoplay: true,
-    controls: true,
-    preload: 'auto',
-    fluid: true,
-    // No direct video source — VAST will provide it
-    sources: [],
-  };
+      if (!videojs || !videoRef.current) return;
 
-  const handlePlayerReady = (player: Player) => {
-    playerRef.current = player;
+      try {
+        const player = videojs(videoRef.current.id);
 
-    (player as any).ads();
+        // Check if ima plugin is registered and is a function
+        if (typeof player.ima === 'function') {
+          clearInterval(interval); // Stop polling
 
-    (player as any).vastClient({
-      adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=d27dc1aa8e1b07b0a48a6fdf8aaa06ad',
-      playAdAlways: true,
-      adCancelTimeout: 5000,
-      adsEnabled: true,
-      verbosity: 4,
-    });
+          player.ima({
+            // adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=d27dc1aa8e1b07b0a48a6fdf8aaa06ad',
+            adTagUrl: 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&env=vp&output=vast&unviewed_position_start=1',
+            debug: true,
+            adsRenderingSettings: {
+              enablePreloading: true,
+            },
+          });
 
-    (player as any).on('vast.adStarted', () => {
-      console.log('✅ VAST ad started');
-      setAdComplete(false);
-    });
+          player.ready(() => {
+            player.ima?.initializeAdDisplayContainer();
+            player.play();
+          });
+        }
+      } catch (e) {
+        console.error('Player init error:', e);
+      }
+    }, 300);
 
-    (player as any).on('adend', () => {
-      console.log('✅ VAST ad ended');
-      setAdComplete(true);
-      toast.success('✅ Ad watched. You may now claim your reward.');
-    });
-
-    (player as any).on('error', (e: any) => {
-      console.error('Ad error:', e);
-      toast.error('❌ An error occurred while playing the ad.');
-    });
-  };
-
-
-  const handleClaimReward = () => {
-    toast.success('🎁 You claimed $0.30!');
-    onComplete();
-  };
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <Dialog open>
-      <DialogContent className="space-y-4 text-center max-w-2xl">
-        <VisuallyHidden>
-          <DialogTitle>Rewarded Ad</DialogTitle>
-        </VisuallyHidden>
+    <>
+      {/* Load styles */}
+      <link
+        href="https://vjs.zencdn.net/8.10.0/video-js.css"
+        rel="stylesheet"
+      />
 
-        <h2 className="text-lg font-semibold">🎥 Watch the full ad to claim $0.30</h2>
+      {/* Load scripts in correct order */}
+      <Script
+        src="https://vjs.zencdn.net/8.10.0/video.min.js"
+        strategy="beforeInteractive"
+      />
+      <Script
+        src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"
+        strategy="beforeInteractive"
+      />
+      <Script
+        src="https://cdn.jsdelivr.net/npm/videojs-contrib-ads@6.10.0/dist/videojs.ads.min.js"
+        strategy="beforeInteractive"
+      />
+      <Script
+        src="https://cdn.jsdelivr.net/npm/videojs-ima@1.10.0/dist/videojs.ima.min.js"
+        strategy="beforeInteractive"
+      />
 
-        <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
-
-        <Button
-          disabled={!adComplete}
-          onClick={handleClaimReward}
-          className="w-full"
+      <div className="w-full flex justify-center mt-4">
+        <video
+          id="my-video"
+          ref={videoRef}
+          className="video-js vjs-big-play-centered"
+          controls
+          width="640"
+          height="360"
+          preload="auto"
         >
-          {adComplete ? '🎁 Claim Your $0.30 Reward' : '⏳ Watch ad to unlock reward'}
-        </Button>
-      </DialogContent>
-    </Dialog>
+          <source
+            src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4"
+            type="video/mp4"
+          />
+        </video>
+      </div>
+    </>
   );
 }
-// This component handles the rewarded ad modal, allowing users to watch an ad and claim a reward.
-// It uses VideoJS for video playback and integrates with a VAST ad server.

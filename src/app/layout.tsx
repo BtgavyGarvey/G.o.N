@@ -96,13 +96,11 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         
-        <Script src="http://vjs.zencdn.net/8.21.1/video.js"></Script>
-        <Script src="lib/videojs-contrib-ads/videojs.ads.js"></Script>
-        <link href="//vjs.zencdn.net/8.21.1/video-js.min.css" rel="stylesheet" />
-        <Script src="//vjs.zencdn.net/8.21.1/video.min.js"></Script>
+        <link href="https://vjs.zencdn.net/8.0.0/video-js.css" rel="stylesheet "/>
+        <Script src="https://vjs.zencdn.net/8.0.0/video.min.js"></Script>
+        <Script src="https://cdn.jsdelivr.net/npm/videojs-contrib-ads@6.9.0/dist/videojs-contrib-ads.min.js"></Script>
+        <Script src="https://cdn.jsdelivr.net/npm/videojs-ima@1.11.0/dist/videojs.ima.min.js"></Script>
 
-        <Script src="lib/vast-client.js"></Script>
-        <Script src="videojs.vast.js"></Script>
 
         {/* Google Analytics */}
         <Script
